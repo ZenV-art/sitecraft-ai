@@ -4,9 +4,9 @@ out/
 build/
 .vercel/
 .env*.local
-.env
 *.log
 .DS_Store
 next-env.d.ts
 
 .vercel
+config.bat

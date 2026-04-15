@@ -10,15 +10,95 @@ import {
   ExternalLink,
   Github,
   Sparkles,
+  Check,
 } from "lucide-react";
 
 export default function HomePage() {
   const [business, setBusiness] = useState<BusinessData>(DEFAULT_BUSINESS);
   const [preview, setPreview] = useState<BusinessData>(DEFAULT_BUSINESS);
   const [viewport, setViewport] = useState<"desktop" | "mobile">("desktop");
+  const [published, setPublished] = useState(false);
 
   function handleGenerate() {
     setPreview(business);
+  }
+
+  function slugify(s: string) {
+    return (
+      s
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "")
+        .slice(0, 40) || "landing"
+    );
+  }
+
+  function handlePublish() {
+    const node = document.getElementById("landing-preview");
+    if (!node) return;
+    const inner = node.innerHTML;
+    const title = preview.name ? `${preview.name} — ${preview.tagline || "Landing"}` : "Landing";
+    const desc = preview.description || preview.tagline || "";
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${escapeHtml(title)}</title>
+<meta name="description" content="${escapeHtml(desc)}" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          serif: ['Playfair Display', 'Georgia', 'serif'],
+          display: ['Space Grotesk', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+<\/script>
+<style>
+  :root {
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-sans); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; margin: 0; }
+  .font-serif { font-family: var(--font-serif); }
+  .font-display { font-family: var(--font-display); }
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+</style>
+</head>
+<body>
+${inner}
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${slugify(preview.name)}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setPublished(true);
+    setTimeout(() => setPublished(false), 2200);
   }
 
   return (
@@ -69,8 +149,23 @@ export default function HomePage() {
           >
             <Github className="h-3.5 w-3.5" /> Source
           </a>
-          <button className="hidden items-center gap-1.5 rounded-lg bg-slate-900 px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-slate-800 md:inline-flex">
-            <ExternalLink className="h-3.5 w-3.5" /> Publish
+          <button
+            onClick={handlePublish}
+            className={`hidden items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors md:inline-flex ${
+              published
+                ? "bg-emerald-600 hover:bg-emerald-600"
+                : "bg-slate-900 hover:bg-slate-800"
+            }`}
+          >
+            {published ? (
+              <>
+                <Check className="h-3.5 w-3.5" /> Downloaded
+              </>
+            ) : (
+              <>
+                <ExternalLink className="h-3.5 w-3.5" /> Publish
+              </>
+            )}
           </button>
         </div>
       </header>
@@ -101,7 +196,9 @@ export default function HomePage() {
                 } preview-scroll overflow-y-auto`}
                 style={{ maxHeight: viewport === "mobile" ? "780px" : "none" }}
               >
-                <LandingPreview data={preview} />
+                <div id="landing-preview">
+                  <LandingPreview data={preview} />
+                </div>
               </div>
             </div>
           </div>
@@ -118,6 +215,15 @@ export default function HomePage() {
       </div>
     </div>
   );
+}
+
+function escapeHtml(s: string) {
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function BrowserChrome({ businessName }: { businessName: string }) {
