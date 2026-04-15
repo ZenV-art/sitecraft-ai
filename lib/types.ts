@@ -17,6 +17,7 @@ export interface BusinessData {
   email: string;
   phone: string;
   type: BusinessType;
+  heroImage?: string;
 }
 
 export const DEFAULT_BUSINESS: BusinessData = {

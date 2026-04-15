@@ -150,7 +150,15 @@ export default function LandingPreview({ data }: Props) {
               <div
                 className={`${theme.surface} ${theme.border} aspect-[4/5] w-full overflow-hidden rounded-3xl border shadow-2xl`}
               >
-                <HeroVisual vibe={theme.vibe} initials={initials} />
+                {data.heroImage ? (
+                  <img
+                    src={data.heroImage}
+                    alt={data.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <HeroVisual vibe={theme.vibe} initials={initials} />
+                )}
               </div>
               <div
                 className={`${theme.surface} ${theme.border} absolute -bottom-6 -left-6 rounded-2xl border p-4 shadow-xl`}
@@ -267,7 +275,15 @@ export default function LandingPreview({ data }: Props) {
               <div
                 className={`${theme.surface} ${theme.border} aspect-[4/3] overflow-hidden rounded-3xl border shadow-xl`}
               >
-                <HeroVisual vibe={theme.vibe} initials={initials} alt />
+                {data.heroImage ? (
+                  <img
+                    src={data.heroImage}
+                    alt={data.name}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <HeroVisual vibe={theme.vibe} initials={initials} alt />
+                )}
               </div>
             </div>
             <div>

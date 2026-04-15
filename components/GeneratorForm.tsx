@@ -2,8 +2,8 @@
 
 import { BusinessData } from "@/lib/types";
 import { BUSINESS_TYPE_OPTIONS } from "@/lib/themes";
-import { Sparkles, Loader2 } from "lucide-react";
-import { useState } from "react";
+import { Sparkles, Loader2, ImagePlus, X } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface Props {
   value: BusinessData;
@@ -14,9 +14,23 @@ interface Props {
 export default function GeneratorForm({ value, onChange, onGenerate }: Props) {
   const [servicesText, setServicesText] = useState(value.services.join("\n"));
   const [generating, setGenerating] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof BusinessData>(key: K, v: BusinessData[K]) {
     onChange({ ...value, [key]: v });
+  }
+
+  function handleImage(file: File) {
+    if (!file.type.startsWith("image/")) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Please use an image under 5MB.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      update("heroImage", e.target?.result as string);
+    };
+    reader.readAsDataURL(file);
   }
 
   function handleGenerate() {
@@ -69,6 +83,66 @@ export default function GeneratorForm({ value, onChange, onGenerate }: Props) {
                 );
               })}
             </div>
+          </Field>
+
+          <Field
+            label="Hero Image"
+            hint="Optional — featured on the landing page"
+          >
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) handleImage(f);
+                e.target.value = "";
+              }}
+            />
+            {value.heroImage ? (
+              <div className="group relative overflow-hidden rounded-xl border border-slate-200">
+                <img
+                  src={value.heroImage}
+                  alt="Hero preview"
+                  className="aspect-[16/10] w-full object-cover"
+                />
+                <button
+                  type="button"
+                  onClick={() => update("heroImage", undefined)}
+                  className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-white opacity-0 backdrop-blur-sm transition-opacity hover:bg-black/90 group-hover:opacity-100"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  className="absolute bottom-2 left-2 rounded-md bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-slate-700 opacity-0 backdrop-blur-sm transition-opacity hover:bg-white group-hover:opacity-100"
+                >
+                  Replace
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const f = e.dataTransfer.files?.[0];
+                  if (f) handleImage(f);
+                }}
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 px-4 py-7 text-slate-500 transition-all hover:border-slate-400 hover:bg-slate-100"
+              >
+                <ImagePlus className="h-5 w-5" />
+                <span className="text-xs font-semibold">
+                  Click to upload or drag & drop
+                </span>
+                <span className="text-[10px] text-slate-400">
+                  PNG, JPG, WEBP — up to 5MB
+                </span>
+              </button>
+            )}
           </Field>
 
           <Field label="Business Name" required>
