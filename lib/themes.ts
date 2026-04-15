@@ -2,6 +2,7 @@ import { BusinessType } from "./types";
 
 export interface Theme {
   label: string;
+  mode: "light" | "dark";
   bg: string;
   surface: string;
   surfaceAlt: string;
@@ -10,13 +11,15 @@ export interface Theme {
   accent: string;
   accentHover: string;
   accentText: string;
+  accentRing: string;
   border: string;
+  dividerBg: string;
   heroBg: string;
-  heroPattern: string;
   fontDisplay: string;
   fontBody: string;
   navStyle: string;
-  heroOverlay: string;
+  navHoverText: string;
+  outlineHover: string;
   sectionPad: string;
   vibe: string;
 }
@@ -24,6 +27,7 @@ export interface Theme {
 export const themes: Record<BusinessType, Theme> = {
   restaurant: {
     label: "Warm & Inviting",
+    mode: "light",
     bg: "bg-[#FBF7F1]",
     surface: "bg-white",
     surfaceAlt: "bg-[#F3EADB]",
@@ -32,18 +36,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#A0522D]",
     accentHover: "hover:bg-[#8B4513]",
     accentText: "text-[#A0522D]",
+    accentRing: "ring-[#A0522D]/30",
     border: "border-[#E8DCC8]",
+    dividerBg: "bg-[#E8DCC8]",
     heroBg: "bg-gradient-to-br from-[#FBF7F1] via-[#F8EFE0] to-[#F3E4CA]",
-    heroPattern: "",
     fontDisplay: "font-serif",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-[#2C1810]/5",
+    navHoverText: "hover:text-[#2C1810]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "warm",
   },
   cafe: {
     label: "Cozy & Artisan",
+    mode: "light",
     bg: "bg-[#F7F3ED]",
     surface: "bg-white",
     surfaceAlt: "bg-[#EEE5D5]",
@@ -52,18 +59,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#6F4E37]",
     accentHover: "hover:bg-[#5A3F2C]",
     accentText: "text-[#6F4E37]",
+    accentRing: "ring-[#6F4E37]/30",
     border: "border-[#E0D4BF]",
+    dividerBg: "bg-[#E0D4BF]",
     heroBg: "bg-gradient-to-br from-[#F7F3ED] to-[#E8DDC8]",
-    heroPattern: "",
     fontDisplay: "font-serif",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-[#3B2817]/5",
+    navHoverText: "hover:text-[#3B2817]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "warm",
   },
   gym: {
     label: "Bold & Powerful",
+    mode: "dark",
     bg: "bg-[#0A0A0A]",
     surface: "bg-[#141414]",
     surfaceAlt: "bg-[#1A1A1A]",
@@ -72,18 +82,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#FF3B30]",
     accentHover: "hover:bg-[#E5342A]",
     accentText: "text-[#FF3B30]",
+    accentRing: "ring-[#FF3B30]/40",
     border: "border-white/10",
+    dividerBg: "bg-white/10",
     heroBg: "bg-gradient-to-br from-black via-[#0F0F0F] to-[#1A0505]",
-    heroPattern: "",
     fontDisplay: "font-display",
     fontBody: "font-sans",
     navStyle: "bg-black/80 backdrop-blur-md",
-    heroOverlay: "bg-black/20",
+    navHoverText: "hover:text-white",
+    outlineHover: "hover:bg-white/5",
     sectionPad: "py-28",
     vibe: "bold",
   },
   salon: {
     label: "Elegant & Refined",
+    mode: "light",
     bg: "bg-[#FDFBF9]",
     surface: "bg-white",
     surfaceAlt: "bg-[#F5ECE4]",
@@ -92,18 +105,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#B76E79]",
     accentHover: "hover:bg-[#A05D69]",
     accentText: "text-[#B76E79]",
+    accentRing: "ring-[#B76E79]/30",
     border: "border-[#EADFD5]",
+    dividerBg: "bg-[#EADFD5]",
     heroBg: "bg-gradient-to-br from-[#FDFBF9] via-[#F7EDE6] to-[#EDDDD1]",
-    heroPattern: "",
     fontDisplay: "font-serif",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-[#2B1D1D]/5",
+    navHoverText: "hover:text-[#2B1D1D]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "elegant",
   },
   clinic: {
     label: "Clean & Trusted",
+    mode: "light",
     bg: "bg-[#F8FBFE]",
     surface: "bg-white",
     surfaceAlt: "bg-[#EDF4FB]",
@@ -112,18 +128,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#2563EB]",
     accentHover: "hover:bg-[#1E4FCB]",
     accentText: "text-[#2563EB]",
+    accentRing: "ring-[#2563EB]/30",
     border: "border-[#DCE6F3]",
+    dividerBg: "bg-[#DCE6F3]",
     heroBg: "bg-gradient-to-br from-[#F8FBFE] via-[#EEF4FC] to-[#DEE9F8]",
-    heroPattern: "",
     fontDisplay: "font-sans",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-[#0F2847]/5",
+    navHoverText: "hover:text-[#0F2847]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "clean",
   },
   studio: {
     label: "Creative & Sleek",
+    mode: "light",
     bg: "bg-[#FAFAFA]",
     surface: "bg-white",
     surfaceAlt: "bg-[#F0F0F0]",
@@ -132,18 +151,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#0A0A0A]",
     accentHover: "hover:bg-[#2B2B2B]",
     accentText: "text-[#0A0A0A]",
+    accentRing: "ring-[#0A0A0A]/30",
     border: "border-[#E8E8E8]",
+    dividerBg: "bg-[#E8E8E8]",
     heroBg: "bg-gradient-to-br from-white via-[#FAFAFA] to-[#F0F0F0]",
-    heroPattern: "",
     fontDisplay: "font-display",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-black/5",
+    navHoverText: "hover:text-[#0A0A0A]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "modern",
   },
   shop: {
     label: "Fresh & Playful",
+    mode: "light",
     bg: "bg-[#FAFAF5]",
     surface: "bg-white",
     surfaceAlt: "bg-[#F0F4E8]",
@@ -152,18 +174,21 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#2D6A4F]",
     accentHover: "hover:bg-[#24553F]",
     accentText: "text-[#2D6A4F]",
+    accentRing: "ring-[#2D6A4F]/30",
     border: "border-[#DDE5D3]",
+    dividerBg: "bg-[#DDE5D3]",
     heroBg: "bg-gradient-to-br from-[#FAFAF5] via-[#F0F4E8] to-[#E3ECD5]",
-    heroPattern: "",
     fontDisplay: "font-display",
     fontBody: "font-sans",
     navStyle: "bg-white/80 backdrop-blur-md",
-    heroOverlay: "bg-[#1A2E1F]/5",
+    navHoverText: "hover:text-[#1A2E1F]",
+    outlineHover: "hover:bg-black/5",
     sectionPad: "py-24",
     vibe: "fresh",
   },
   agency: {
     label: "Sharp & Modern",
+    mode: "dark",
     bg: "bg-[#0B0F17]",
     surface: "bg-[#141927]",
     surfaceAlt: "bg-[#1A2033]",
@@ -172,13 +197,15 @@ export const themes: Record<BusinessType, Theme> = {
     accent: "bg-[#6366F1]",
     accentHover: "hover:bg-[#5557E8]",
     accentText: "text-[#818CF8]",
+    accentRing: "ring-[#6366F1]/40",
     border: "border-white/10",
+    dividerBg: "bg-white/10",
     heroBg: "bg-gradient-to-br from-[#0B0F17] via-[#141B30] to-[#1E1B4B]",
-    heroPattern: "",
     fontDisplay: "font-display",
     fontBody: "font-sans",
     navStyle: "bg-[#0B0F17]/80 backdrop-blur-md",
-    heroOverlay: "bg-black/20",
+    navHoverText: "hover:text-white",
+    outlineHover: "hover:bg-white/5",
     sectionPad: "py-28",
     vibe: "sharp",
   },

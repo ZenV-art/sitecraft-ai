@@ -21,13 +21,16 @@ interface Props {
 export default function LandingPreview({ data }: Props) {
   const theme = themes[data.type];
   const copy = generateCopy(data);
-  const services = data.services.slice(0, 6);
-  const initials = data.name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join("")
-    .toUpperCase() || "LO";
+  const services = data.services.length ? data.services.slice(0, 6) : [];
+  const initials =
+    data.name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join("")
+      .toUpperCase() || "CO";
+  const isDark = theme.mode === "dark";
 
   return (
     <div
@@ -54,7 +57,7 @@ export default function LandingPreview({ data }: Props) {
               <a
                 key={l}
                 href={`#${l.toLowerCase()}`}
-                className={`${theme.textMuted} text-sm font-medium transition-colors hover:${theme.text.replace("text-", "text-")}`}
+                className={`${theme.textMuted} ${theme.navHoverText} text-sm font-medium transition-colors`}
               >
                 {l}
               </a>
@@ -73,7 +76,9 @@ export default function LandingPreview({ data }: Props) {
 
       {/* HERO */}
       <section className={`${theme.heroBg} relative overflow-hidden`}>
-        <div className="pointer-events-none absolute inset-0 grid-bg opacity-30" />
+        {!isDark && (
+          <div className="pointer-events-none absolute inset-0 grid-bg opacity-30" />
+        )}
         <div className="relative mx-auto max-w-7xl px-6 pb-24 pt-20 lg:px-10 lg:pb-32 lg:pt-28">
           <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
             <div className="animate-slide-up">
@@ -101,7 +106,7 @@ export default function LandingPreview({ data }: Props) {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
                 <button
-                  className={`${theme.border} ${theme.text} rounded-full border-2 bg-transparent px-7 py-3.5 text-sm font-semibold backdrop-blur-sm transition-colors hover:bg-black/5`}
+                  className={`${theme.border} ${theme.outlineHover} rounded-full border-2 bg-transparent px-7 py-3.5 text-sm font-semibold transition-colors`}
                 >
                   Learn more
                 </button>
@@ -112,12 +117,14 @@ export default function LandingPreview({ data }: Props) {
                   {[0, 1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className={`h-9 w-9 rounded-full border-2 ring-2 ${theme.border} bg-gradient-to-br ${
+                      className={`h-9 w-9 rounded-full bg-gradient-to-br ring-2 ${
+                        isDark ? "ring-white/20" : "ring-white"
+                      } ${
                         [
-                          "from-amber-200 to-amber-400",
-                          "from-rose-200 to-rose-400",
-                          "from-sky-200 to-sky-400",
-                          "from-emerald-200 to-emerald-400",
+                          "from-amber-200 to-amber-500",
+                          "from-rose-200 to-rose-500",
+                          "from-sky-200 to-sky-500",
+                          "from-emerald-200 to-emerald-500",
                         ][i]
                       }`}
                     />
@@ -164,8 +171,10 @@ export default function LandingPreview({ data }: Props) {
       </section>
 
       {/* STATS BAR */}
-      <section className={`${theme.surfaceAlt} ${theme.border} border-y`}>
-        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-px lg:grid-cols-4">
+      <section className={`${theme.bg} ${theme.border} border-y`}>
+        <div
+          className={`${theme.dividerBg} mx-auto grid max-w-7xl grid-cols-2 gap-px lg:grid-cols-4`}
+        >
           {copy.stats.map((stat, i) => (
             <div
               key={i}
@@ -203,30 +212,46 @@ export default function LandingPreview({ data }: Props) {
           </div>
 
           <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {services.map((service, i) => (
+            {services.length === 0 ? (
               <div
-                key={i}
-                className={`${theme.surface} ${theme.border} group relative overflow-hidden rounded-2xl border p-7 transition-all hover:-translate-y-1 hover:shadow-xl`}
+                className={`${theme.textMuted} col-span-full text-center text-sm italic`}
               >
-                <div
-                  className={`${theme.accent} mb-5 flex h-11 w-11 items-center justify-center rounded-xl text-white`}
-                >
-                  <span className="text-sm font-bold">0{i + 1}</span>
-                </div>
-                <h3 className={`${theme.fontDisplay} text-xl font-bold`}>
-                  {service}
-                </h3>
-                <p className={`${theme.textMuted} mt-3 text-sm leading-relaxed`}>
-                  {serviceDescription(service, data)}
-                </p>
-                <div
-                  className={`${theme.accentText} mt-5 flex items-center gap-1.5 text-sm font-semibold`}
-                >
-                  Learn more
-                  <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </div>
+                Add services in the form to see them here.
               </div>
-            ))}
+            ) : (
+              services.map((service, i) => (
+                <div
+                  key={i}
+                  className={`${theme.surface} ${theme.border} group relative overflow-hidden rounded-2xl border p-7 transition-all hover:-translate-y-1 ${
+                    isDark
+                      ? "hover:shadow-2xl hover:shadow-black/50"
+                      : "hover:shadow-xl"
+                  }`}
+                >
+                  <div
+                    className={`${theme.accent} mb-5 flex h-11 w-11 items-center justify-center rounded-xl text-white`}
+                  >
+                    <span className="text-sm font-bold">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <h3 className={`${theme.fontDisplay} text-xl font-bold`}>
+                    {service}
+                  </h3>
+                  <p
+                    className={`${theme.textMuted} mt-3 text-sm leading-relaxed`}
+                  >
+                    {serviceDescription(service, data)}
+                  </p>
+                  <div
+                    className={`${theme.accentText} mt-5 flex items-center gap-1.5 text-sm font-semibold`}
+                  >
+                    Learn more
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </section>
@@ -239,7 +264,9 @@ export default function LandingPreview({ data }: Props) {
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
           <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
             <div>
-              <div className={`${theme.surface} ${theme.border} aspect-[4/3] overflow-hidden rounded-3xl border shadow-xl`}>
+              <div
+                className={`${theme.surface} ${theme.border} aspect-[4/3] overflow-hidden rounded-3xl border shadow-xl`}
+              >
                 <HeroVisual vibe={theme.vibe} initials={initials} alt />
               </div>
             </div>
@@ -295,13 +322,19 @@ export default function LandingPreview({ data }: Props) {
             {copy.testimonials.map((t, i) => (
               <div
                 key={i}
-                className={`${theme.surface} ${theme.border} rounded-2xl border p-7 shadow-sm transition-all hover:shadow-lg`}
+                className={`${theme.surface} ${theme.border} rounded-2xl border p-7 transition-all ${
+                  isDark
+                    ? "hover:shadow-2xl hover:shadow-black/50"
+                    : "shadow-sm hover:shadow-lg"
+                }`}
               >
                 <Quote
                   className={`${theme.accentText} h-6 w-6`}
                   strokeWidth={1.5}
                 />
-                <p className="mt-4 text-[15px] leading-relaxed">"{t.quote}"</p>
+                <p className="mt-4 text-[15px] leading-relaxed">
+                  &ldquo;{t.quote}&rdquo;
+                </p>
                 <div
                   className={`${theme.border} mt-6 flex items-center gap-3 border-t pt-5`}
                 >
@@ -316,9 +349,7 @@ export default function LandingPreview({ data }: Props) {
                   </div>
                   <div>
                     <div className="text-sm font-semibold">{t.name}</div>
-                    <div className={`${theme.textMuted} text-xs`}>
-                      {t.role}
-                    </div>
+                    <div className={`${theme.textMuted} text-xs`}>{t.role}</div>
                   </div>
                 </div>
               </div>
@@ -335,9 +366,7 @@ export default function LandingPreview({ data }: Props) {
           >
             {copy.ctaTitle}
           </h2>
-          <p
-            className={`${theme.textMuted} mx-auto mt-5 max-w-xl text-lg`}
-          >
+          <p className={`${theme.textMuted} mx-auto mt-5 max-w-xl text-lg`}>
             {copy.ctaSubtitle}
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
@@ -350,7 +379,7 @@ export default function LandingPreview({ data }: Props) {
             {data.phone && (
               <a
                 href={`tel:${data.phone}`}
-                className={`${theme.border} rounded-full border-2 bg-transparent px-8 py-4 text-sm font-semibold transition-colors hover:bg-black/5`}
+                className={`${theme.border} ${theme.outlineHover} rounded-full border-2 bg-transparent px-8 py-4 text-sm font-semibold transition-colors`}
               >
                 Or call {data.phone}
               </a>
@@ -362,21 +391,24 @@ export default function LandingPreview({ data }: Props) {
       {/* CONTACT */}
       <section id="contact" className={theme.sectionPad}>
         <div className="mx-auto max-w-7xl px-6 lg:px-10">
-          <div className="grid gap-10 lg:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols-3">
             <ContactCard
               theme={theme}
+              isDark={isDark}
               icon={<MapPin className="h-5 w-5" />}
               title="Visit us"
               body={data.location || "Address coming soon"}
             />
             <ContactCard
               theme={theme}
+              isDark={isDark}
               icon={<Phone className="h-5 w-5" />}
               title="Call us"
               body={data.phone || "Phone coming soon"}
             />
             <ContactCard
               theme={theme}
+              isDark={isDark}
               icon={<Mail className="h-5 w-5" />}
               title="Email us"
               body={data.email || "hello@yourbusiness.com"}
@@ -386,9 +418,7 @@ export default function LandingPreview({ data }: Props) {
       </section>
 
       {/* FOOTER */}
-      <footer
-        className={`${theme.border} ${theme.surfaceAlt} border-t`}
-      >
+      <footer className={`${theme.border} ${theme.surfaceAlt} border-t`}>
         <div className="mx-auto max-w-7xl px-6 py-14 lg:px-10">
           <div className="grid gap-10 md:grid-cols-4">
             <div className="md:col-span-2">
@@ -402,7 +432,9 @@ export default function LandingPreview({ data }: Props) {
                   {data.name || "Your Business"}
                 </span>
               </div>
-              <p className={`${theme.textMuted} mt-4 max-w-sm text-sm leading-relaxed`}>
+              <p
+                className={`${theme.textMuted} mt-4 max-w-sm text-sm leading-relaxed`}
+              >
                 {data.description}
               </p>
             </div>
@@ -415,7 +447,7 @@ export default function LandingPreview({ data }: Props) {
                   <li key={l}>
                     <a
                       href={`#${l.toLowerCase()}`}
-                      className={`${theme.textMuted} text-sm transition-colors hover:underline`}
+                      className={`${theme.textMuted} ${theme.navHoverText} text-sm transition-colors`}
                     >
                       {l}
                     </a>
@@ -453,18 +485,22 @@ export default function LandingPreview({ data }: Props) {
 
 function ContactCard({
   theme,
+  isDark,
   icon,
   title,
   body,
 }: {
   theme: (typeof themes)[keyof typeof themes];
+  isDark: boolean;
   icon: React.ReactNode;
   title: string;
   body: string;
 }) {
   return (
     <div
-      className={`${theme.surface} ${theme.border} rounded-2xl border p-7 transition-all hover:shadow-lg`}
+      className={`${theme.surface} ${theme.border} rounded-2xl border p-7 transition-all ${
+        isDark ? "hover:shadow-2xl hover:shadow-black/50" : "hover:shadow-lg"
+      }`}
     >
       <div
         className={`${theme.accent} mb-4 flex h-11 w-11 items-center justify-center rounded-xl text-white`}
@@ -472,7 +508,9 @@ function ContactCard({
         {icon}
       </div>
       <h3 className={`${theme.fontDisplay} text-lg font-bold`}>{title}</h3>
-      <p className={`${theme.textMuted} mt-2 text-sm leading-relaxed`}>{body}</p>
+      <p className={`${theme.textMuted} mt-2 text-sm leading-relaxed`}>
+        {body}
+      </p>
     </div>
   );
 }
@@ -505,7 +543,9 @@ function HeroVisual({
         <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-white/20 blur-3xl" />
       </div>
       <div
-        className={`relative text-[10rem] font-black tracking-tighter text-white/80 ${alt ? "opacity-60" : ""}`}
+        className={`relative text-[10rem] font-black tracking-tighter text-white/80 ${
+          alt ? "opacity-60" : ""
+        }`}
         style={{
           textShadow: "0 8px 40px rgba(0,0,0,0.2)",
           fontFamily: "var(--font-display)",
@@ -517,16 +557,20 @@ function HeroVisual({
   );
 }
 
-function serviceDescription(service: string, data: BusinessData): string {
+function serviceDescription(_service: string, data: BusinessData): string {
   const base: Record<string, string> = {
-    restaurant: "Thoughtfully prepared and beautifully presented. Available daily with seasonal variations.",
+    restaurant:
+      "Thoughtfully prepared and beautifully presented. Available daily with seasonal variations.",
     cafe: "Made fresh each morning using ingredients we actually trust. Small batch, always.",
     gym: "Structured, coached, and designed to get you real results — not just a workout.",
     salon: "An experience tailored to you, from consultation to finishing touch.",
-    clinic: "Delivered by specialists using modern equipment and evidence-based protocols.",
-    studio: "Hands-on creative partnership from brief to final delivery — no hand-offs.",
+    clinic:
+      "Delivered by specialists using modern equipment and evidence-based protocols.",
+    studio:
+      "Hands-on creative partnership from brief to final delivery — no hand-offs.",
     shop: "Carefully curated, thoughtfully priced, and backed by our quality guarantee.",
-    agency: "Senior engineers embedded with your team. Weekly demos, full transparency.",
+    agency:
+      "Senior engineers embedded with your team. Weekly demos, full transparency.",
   };
   return base[data.type];
 }
@@ -536,7 +580,7 @@ function aboutPoints(data: BusinessData): string[] {
     restaurant: [
       "Menu changes with the season — always fresh",
       "Locally sourced ingredients, transparent suppliers",
-      "Reservations + walk-ins equally welcome",
+      "Reservations and walk-ins equally welcome",
     ],
     cafe: [
       "In-house roasted, single-origin beans",

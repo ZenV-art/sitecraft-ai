@@ -62,7 +62,7 @@ export default function HomePage() {
 
         <div className="flex items-center gap-2">
           <a
-            href="https://github.com/ZenV-art"
+            href="https://github.com/ZenV-art/sitecraft-ai"
             target="_blank"
             rel="noreferrer"
             className="hidden items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:bg-slate-50 md:inline-flex"
@@ -94,7 +94,7 @@ export default function HomePage() {
                 viewport === "mobile" ? "max-w-[390px]" : "max-w-full"
               }`}
             >
-              <BrowserChrome />
+              <BrowserChrome businessName={preview.name} />
               <div
                 className={`${
                   viewport === "mobile" ? "max-h-[780px]" : ""
@@ -120,7 +120,15 @@ export default function HomePage() {
   );
 }
 
-function BrowserChrome() {
+function BrowserChrome({ businessName }: { businessName: string }) {
+  const domain = businessName
+    ? businessName
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "")
+        .slice(0, 30) + ".com"
+    : "yourbusiness.com";
   return (
     <div className="flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-2.5">
       <div className="flex gap-1.5">
@@ -130,7 +138,7 @@ function BrowserChrome() {
       </div>
       <div className="mx-auto flex items-center gap-2 rounded-md bg-white px-3 py-1 text-[11px] font-medium text-slate-500 ring-1 ring-slate-200">
         <span className="text-slate-400">🔒</span>
-        yourbusiness.com
+        {domain}
       </div>
       <div className="w-12" />
     </div>
